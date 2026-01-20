@@ -1,0 +1,30 @@
+# --- Build Artifacts ---
+bin/
+obj/
+*.o
+*.obj
+*.exe
+*.out
+demo
+
+# --- OS Specific ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# --- IDEs and Editors ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- Dependency Management ---
+# (If you add a package manager like vcpkg or conan later)
+vcpkg_installed/
+build/
+
+# --- Logs and Tmp ---
+*.log
+*.tmp
