@@ -6,6 +6,11 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#ifdef _WIN32
+#include <direct.h>
+#define mkdir(path, mode) _mkdir(path)
+#endif
+
 static void EnsureDirectory(const char *path) {
   char tmp[256];
   char *p = NULL;
@@ -27,6 +32,9 @@ static void EnsureDirectory(const char *path) {
 
 static void GetSaveFilePath(char *buffer, size_t size, int slot) {
   const char *home = getenv("HOME");
+  if (!home)
+    home = getenv("USERPROFILE");
+
   if (home) {
     snprintf(buffer, size, "%s/Documents/Prototype-RPGS", home);
     EnsureDirectory(buffer);
