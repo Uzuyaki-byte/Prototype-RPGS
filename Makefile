@@ -1,6 +1,19 @@
 CC = gcc
-CFLAGS = -Wall -std=c99 -Iinclude -I/usr/local/include
-LDFLAGS = -L/usr/local/lib -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+CFLAGS = -Wall -std=c99 -Iinclude
+# Default LDFLAGS for Linux
+LDFLAGS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+
+# --- OS Detection ---
+ifeq ($(OS),Windows_NT)
+    # Windows-specific overrides
+    TARGET_EXTENSION = .exe
+    LDFLAGS = -lraylib -lgdi32 -lwinmm
+else
+    # Linux-specific additions
+    TARGET_EXTENSION =
+    CFLAGS += -I/usr/local/include
+    LDFLAGS += -L/usr/local/lib
+endif
 
 SRC_DIR = src
 OBJ_DIR = obj
@@ -8,7 +21,7 @@ BIN_DIR = bin
 
 SRCS = $(wildcard $(SRC_DIR)/*.c)
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
-TARGET = $(BIN_DIR)/demo
+TARGET = $(BIN_DIR)/demo$(TARGET_EXTENSION)
 
 all: $(TARGET)
 
