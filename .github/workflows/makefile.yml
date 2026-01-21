@@ -64,3 +64,27 @@ jobs:
       with:
         name: prototype-rpgs-windows
         path: bin/demo.exe
+
+  release:
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+
+    - name: Create Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        TAG_NAME="v0.1.${{ github.run_number }}"
+        gh release create "$TAG_NAME" \
+          --title "Release $TAG_NAME" \
+          --notes "Automated release from build #${{ github.run_number }}" \
+          artifacts/prototype-rpgs-linux/demo \
+          artifacts/prototype-rpgs-windows/demo.exe
