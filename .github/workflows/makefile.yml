@@ -50,3 +50,17 @@ jobs:
       run: |
         export PATH="/mingw64/bin:$PATH"
         make
+
+    - name: Upload Linux Artifact
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: prototype-rpgs-linux
+        path: bin/demo
+
+    - name: Upload Windows Artifact
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: prototype-rpgs-windows
+        path: bin/demo.exe
