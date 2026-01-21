@@ -39,33 +39,39 @@ jobs:
           mingw-w64-x86_64-gcc
           mingw-w64-x86_64-raylib
           make
+          zip
 
     - name: Build (Linux)
       if: matrix.os == 'ubuntu-latest'
-      run: make
+      run: |
+        make
+        zip -j prototype-rpgs-linux.zip bin/demo
 
     - name: Build (Windows)
       if: matrix.os == 'windows-latest'
       shell: msys2 {0}
       run: |
         export PATH="/mingw64/bin:$PATH"
-        mkdir -p bin
-        cp /mingw64/bin/libraylib.dll bin/
         make
+        # Gather all required DLLs from mingw64/bin
+        for dll in $(ldd bin/demo.exe | grep -o '/mingw64/bin/[^ ]*.dll'); do
+          cp "$dll" bin/
+        done
+        zip -j prototype-rpgs-windows.zip bin/*
 
     - name: Upload Linux Artifact
       if: matrix.os == 'ubuntu-latest'
       uses: actions/upload-artifact@v4
       with:
         name: prototype-rpgs-linux
-        path: bin/demo
+        path: prototype-rpgs-linux.zip
 
     - name: Upload Windows Artifact
       if: matrix.os == 'windows-latest'
       uses: actions/upload-artifact@v4
       with:
         name: prototype-rpgs-windows
-        path: bin/*
+        path: prototype-rpgs-windows.zip
 
   release:
     needs: build
@@ -88,5 +94,5 @@ jobs:
         gh release create "$TAG_NAME" \
           --title "Release $TAG_NAME" \
           --notes "Automated release from build #${{ github.run_number }}" \
-          artifacts/prototype-rpgs-linux/demo \
-          artifacts/prototype-rpgs-windows/*
+          artifacts/prototype-rpgs-linux/prototype-rpgs-linux.zip \
+          artifacts/prototype-rpgs-windows/prototype-rpgs-windows.zip
