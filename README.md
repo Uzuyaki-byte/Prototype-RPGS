@@ -23,6 +23,8 @@ The 2nd and 3rd protagonists aren't planned yet.
 # Patch notes for version 0.2
 
 - Added **Save System** with support for multiple save slots (1-5).
+- Added **Load System** with support for multiple load slots (1-5).
+- Added GitHub Actions CI for Linux and Windows.
 
 ## License
 
