@@ -50,7 +50,7 @@ jobs:
       run: |
         export PATH="/mingw64/bin:$PATH"
         mkdir -p bin
-        cp /mingw64/bin/raylib.dll bin/
+        cp /mingw64/bin/libraylib.dll bin/
         make
 
     - name: Upload Linux Artifact
