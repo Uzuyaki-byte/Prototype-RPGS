@@ -20,7 +20,15 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libraylib-dev libasound2-dev libx11-dev libxrandr-dev libxi-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev
+        sudo apt-get install -y libasound2-dev libx11-dev libxrandr-dev libxi-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev
+
+    - name: Build raylib from source (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        git clone --depth 1 https://github.com/raysan5/raylib.git
+        cd raylib/src
+        make PLATFORM=PLATFORM_DESKTOP
+        sudo make install
 
     - name: Setup MSYS2 (Windows)
       if: matrix.os == 'windows-latest'
