@@ -49,6 +49,8 @@ jobs:
       shell: msys2 {0}
       run: |
         export PATH="/mingw64/bin:$PATH"
+        mkdir -p bin
+        cp /mingw64/bin/raylib.dll bin/
         make
 
     - name: Upload Linux Artifact
@@ -63,7 +65,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: prototype-rpgs-windows
-        path: bin/demo.exe
+        path: bin/*
 
   release:
     needs: build
@@ -87,4 +89,4 @@ jobs:
           --title "Release $TAG_NAME" \
           --notes "Automated release from build #${{ github.run_number }}" \
           artifacts/prototype-rpgs-linux/demo \
-          artifacts/prototype-rpgs-windows/demo.exe
+          artifacts/prototype-rpgs-windows/*
