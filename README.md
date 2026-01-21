@@ -1,9 +1,11 @@
 # Prototype-RPGS
 
-This repository is archive for the development build of the Open World game "Sosta Yakuza".
-Featuring a fictional city inspired by New York, Dhaka and Shenzen.
-There will be 3 protagonists in this game. The 1st protagonist is planned to be an undercover cop investigating the
-gangsters by infiltrating their gang, story and map are both subject to change with decisions. This game will feature a working loading screen-less metro to go around the city. The 2nd and 3rd protagonists aren't planned yet.
+This repository is archive for the development build of the prototype.
+Features fictional city inspired by real life architecture.
+There are 3 protagonists in this game.
+The 1st protagonist is a chill guy.
+Story and map are in progress.
+The 2nd and 3rd protagonists aren't planned yet.
 
 # Patch notes for version 0.1
 
@@ -17,6 +19,10 @@ gangsters by infiltrating their gang, story and map are both subject to change w
 - Added a working **3D Metro System** with collision detection.
 - Improved project maintenance with a robust **Makefile** and **.gitignore**.
 - Optimized rendering with **4x MSAA support**.
+
+# Patch notes for version 0.2
+
+- Added **Save System** with support for multiple save slots (1-5).
 
 ## License
 
