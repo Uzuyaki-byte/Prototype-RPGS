@@ -4,11 +4,12 @@
 #include "common.h"
 
 typedef struct {
-    Vector3 position;
-    float speed;
-    Color color;
-    bool inVehicle;
-    int vehicleIdx;
+  Vector3 position;
+  float speed;
+  float radius;
+  Color color;
+  bool inVehicle;
+  int vehicleIdx;
 } Player;
 
 void InitPlayer(Player *player);

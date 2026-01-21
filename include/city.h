@@ -3,6 +3,8 @@
 
 #include "common.h"
 
-void DrawCity3D(void);
+void InitCity(void);
+void DrawCity3D(Vector3 center, float drawDistance);
+bool CheckCityCollision(Vector3 center, float radius);
 
 #endif

@@ -1,15 +1,15 @@
 #include "city.h"
 #include "common.h"
 #include "console.h"
-#include "metro.h"
 #include "player.h"
 #include "save_system.h"
 #include "vehicle.h"
 
 int main(void) {
   SetConfigFlags(FLAG_MSAA_4X_HINT);
-  SetExitKey(KEY_NULL);
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Sosta Yakuza - Modular Prototype");
+  SetExitKey(KEY_NULL);
+  InitCity();
 
   bool cursorLocked = true;
   DisableCursor();
@@ -17,7 +17,7 @@ int main(void) {
   Player players[3];
   for (int i = 0; i < 3; i++) {
     InitPlayer(&players[i]);
-    players[i].position = (Vector3){10.0f * i, 0.0f, 10.0f * i};
+    players[i].position = (Vector3){-50.0f, 0.0f, -50.0f + 10.0f * i};
     if (i == 1)
       players[i].color = GREEN;
     if (i == 2)
@@ -28,6 +28,10 @@ int main(void) {
   int selectedCharIdx = 0;
   int currentSaveSlot = 1;
 
+  bool showCoords = false;
+  bool paused = false;
+  float drawDistance = 1000.0f;
+
   float cameraAngleH = 0.0f;
   float cameraAngleV = 20.0f;
   float cameraDistance = 40.0f;
@@ -36,15 +40,6 @@ int main(void) {
   camera.up = (Vector3){0.0f, 1.0f, 0.0f};
   camera.fovy = 45.0f;
   camera.projection = CAMERA_PERSPECTIVE;
-
-  Metro metro = {(Vector3){100, 2, 1000},
-                 (Vector3){60, 20, 150},
-                 (Vector3){100, 2, 1000},
-                 (Vector3){2900, 2, 1000},
-                 0.05f,
-                 0.0f,
-                 true,
-                 LIME};
 
   Vehicle vehicles[MAX_VEHICLES] = {0};
 
@@ -82,15 +77,18 @@ int main(void) {
             DisableCursor();
         }
 
+        if (IsKeyPressed(KEY_F3))
+          showCoords = !showCoords;
+
         if (IsKeyPressed(KEY_ESCAPE)) {
-          cursorLocked = !cursorLocked;
-          if (cursorLocked)
-            DisableCursor();
-          else
+          paused = !paused;
+          if (paused)
             EnableCursor();
+          else if (cursorLocked)
+            DisableCursor();
         }
 
-        if (cursorLocked) {
+        if (cursorLocked && !paused) {
           Vector2 delta = GetMouseDelta();
           cameraAngleH -= delta.x * 0.1f;
           cameraAngleV += delta.y * 0.1f;
@@ -166,6 +164,44 @@ int main(void) {
       }
     }
 
+    if (paused) {
+      int panelW = 400;
+      int panelH = 500;
+      int panelX = SCREEN_WIDTH / 2 - panelW / 2;
+      int panelY = SCREEN_HEIGHT / 2 - panelH / 2;
+      Vector2 mousePos = GetMousePosition();
+
+      // Resume Button Logic
+      Rectangle resumeRect = {panelX + 50, panelY + 130, panelW - 100, 50};
+      if (CheckCollisionPointRec(mousePos, resumeRect) &&
+          IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        paused = false;
+        if (cursorLocked)
+          DisableCursor();
+      }
+      // Quit Button Logic
+      else {
+        Rectangle quitRect = {panelX + 50, panelY + 210, panelW - 100, 50};
+        if (CheckCollisionPointRec(mousePos, quitRect) &&
+            IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+          break; // Exit game
+        }
+
+        // Slider Logic
+        Rectangle sliderBar = {panelX + 50, panelY + 350, panelW - 100, 10};
+        if (CheckCollisionPointRec(mousePos, sliderBar) &&
+            IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+          float mouseX = mousePos.x;
+          float sliderPos = (mouseX - sliderBar.x) / sliderBar.width;
+          if (sliderPos < 0)
+            sliderPos = 0;
+          if (sliderPos > 1)
+            sliderPos = 1;
+          drawDistance = 100.0f + sliderPos * 2900.0f;
+        }
+      }
+    }
+
     Vector3 targetPos =
         players[activePlayerIdx].inVehicle
             ? vehicles[players[activePlayerIdx].vehicleIdx].position
@@ -186,7 +222,7 @@ int main(void) {
     forward = Vector3Normalize(forward);
     Vector3 right = (Vector3){-forward.z, 0.0f, forward.x};
 
-    if (!console.active && !switchingChar) {
+    if (!console.active && !switchingChar && !paused) {
       for (int i = 0; i < 3; i++) {
         if (players[i].inVehicle) {
           int vIdx = players[i].vehicleIdx;
@@ -198,7 +234,6 @@ int main(void) {
           UpdatePlayer(&players[i], forward, right, dt);
         }
       }
-      UpdateMetro(&metro, &players[activePlayerIdx], dt);
     }
 
     BeginDrawing();
@@ -206,8 +241,8 @@ int main(void) {
 
     BeginMode3D(camera);
     DrawGrid(60, 50.0f);
-    DrawCity3D();
-    DrawMetro(metro);
+    DrawCity3D(players[activePlayerIdx].position, drawDistance);
+
     for (int i = 0; i < 3; i++) {
       if (!players[i].inVehicle)
         DrawPlayer(players[i]);
@@ -236,11 +271,64 @@ int main(void) {
 
     DrawConsole(console);
 
-    // Draw active save slot UI
     DrawRectangle(10, 10, 180, 40, (Color){0, 0, 0, 150});
     DrawText(TextFormat("SAVE SLOT: %d", currentSaveSlot), 20, 20, 20,
              RAYWHITE);
     DrawText("Keys 1-5 to switch", 20, 55, 15, WHITE);
+
+    if (showCoords) {
+      Vector3 p = players[activePlayerIdx].position;
+      const char *coordText =
+          TextFormat("X: %.2f Y: %.2f Z: %.2f", p.x, p.y, p.z);
+      int tw = MeasureText(coordText, 20);
+      DrawRectangle(SCREEN_WIDTH - tw - 30, 10, tw + 20, 40,
+                    (Color){0, 0, 0, 150});
+      DrawText(coordText, SCREEN_WIDTH - tw - 20, 20, 20, GREEN);
+    }
+
+    if (paused) {
+      DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, (Color){0, 0, 0, 150});
+      int panelW = 400;
+      int panelH = 500;
+      int panelX = SCREEN_WIDTH / 2 - panelW / 2;
+      int panelY = SCREEN_HEIGHT / 2 - panelH / 2;
+      DrawRectangle(panelX, panelY, panelW, panelH, (Color){30, 30, 30, 255});
+      DrawRectangleLines(panelX, panelY, panelW, panelH, WHITE);
+      DrawText("PAUSED", panelX + panelW / 2 - MeasureText("PAUSED", 40) / 2,
+               panelY + 40, 40, WHITE);
+
+      Vector2 mousePos = GetMousePosition();
+
+      // Resume Button
+      Rectangle resumeRect = {panelX + 50, panelY + 130, panelW - 100, 50};
+      bool resumeHover = CheckCollisionPointRec(mousePos, resumeRect);
+      DrawRectangleRec(resumeRect, resumeHover ? LIGHTGRAY : GRAY);
+      DrawRectangleLinesEx(resumeRect, 2, WHITE);
+      DrawText("RESUME",
+               resumeRect.x + resumeRect.width / 2 -
+                   MeasureText("RESUME", 20) / 2,
+               resumeRect.y + 15, 20, BLACK);
+
+      // Quit Button
+      Rectangle quitRect = {panelX + 50, panelY + 210, panelW - 100, 50};
+      bool quitHover = CheckCollisionPointRec(mousePos, quitRect);
+      DrawRectangleRec(quitRect, quitHover ? RED : MAROON);
+      DrawRectangleLinesEx(quitRect, 2, WHITE);
+      DrawText("QUIT",
+               quitRect.x + quitRect.width / 2 - MeasureText("QUIT", 20) / 2,
+               quitRect.y + 15, 20, WHITE);
+
+      // Draw Distance Slider
+      DrawText("Draw Distance:", panelX + 50, panelY + 310, 20, WHITE);
+      Rectangle sliderBar = {panelX + 50, panelY + 350, panelW - 100, 10};
+      DrawRectangleRec(sliderBar, DARKGRAY);
+      float sliderPos = (drawDistance - 100.0f) / 2900.0f;
+      Rectangle sliderKnob = {sliderBar.x + sliderPos * sliderBar.width - 10,
+                              sliderBar.y - 10, 20, 30};
+      DrawRectangleRec(sliderKnob, LIGHTGRAY);
+      DrawText(TextFormat("%.0f", drawDistance), panelX + panelW - 100,
+               panelY + 310, 20, SKYBLUE);
+    }
 
     EndDrawing();
   }

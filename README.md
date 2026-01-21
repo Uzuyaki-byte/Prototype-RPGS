@@ -16,7 +16,7 @@ The 2nd and 3rd protagonists aren't planned yet.
 - Added a **Driveable Vehicle System** with support for multiple active cars (up to 12).
 - Implemented a **Cheat Console** (Tilde `~` key) with commands for speed, teleportation, and spawning vehicles.
 - Refactored codebase into a **Professional Modular Structure** (src/include/bin/obj).
-- Added a working **3D Metro System** with collision detection.
+- Added a working collision detection.
 - Improved project maintenance with a robust **Makefile** and **.gitignore**.
 - Optimized rendering with **4x MSAA support**.
 
@@ -25,6 +25,31 @@ The 2nd and 3rd protagonists aren't planned yet.
 - Added **Save System** with support for multiple save slots (1-5).
 - Added **Load System** with support for multiple load slots (1-5).
 - Added GitHub Actions CI for Linux and Windows.
+- Added Coordinate System
+- Fixed Collision Detection
+- Added Pause Menu
+- Fixed console bug
+
+# Commands & Cheats
+
+### Controls
+- **WASD**: Move Player / Drive Vehicle
+- **Space**: Ascend (Cheat Speed) / Multi-use
+- **F**: Enter/Exit Vehicle
+- **Left Alt**: Hold to show Character Switcher (Click to select)
+- **F3**: Toggle Coordinate Display
+- **ESC**: Toggle Pause Menu
+- **Tilde (`~`)**: Open Cheat Console
+
+### Cheat Console Commands
+Open the console with `~` and type any of these commands:
+- `FAST`: Set movement speed to 60.
+- `SLOW`: Set movement speed to 5.
+- `NORMAL`: Set movement speed to 15.
+- `NY`: Teleport to first district.
+- `DHAKA`: Teleport to second district.
+- `SHENZEN`: Teleport to third district.
+- `CAR`: Spawn a vehicle at your location.
 
 ## License
 
