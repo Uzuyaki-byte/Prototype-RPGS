@@ -7,6 +7,30 @@ The 1st protagonist is a chill guy.
 Story and map are in progress.
 The 2nd and 3rd protagonists aren't planned yet.
 
+# Install Dependencies
+
+## Linux (Debian/Ubuntu)
+
+1. Install build tools and dependencies:
+   ```bash
+   sudo apt install build-essential git libasound2-dev mesa-common-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev
+   ```
+
+2. Install Raylib:
+   ```bash
+   git clone https://github.com/raysan5/raylib.git raylib
+   cd raylib/src/
+   make PLATFORM=PLATFORM_DESKTOP
+   sudo make install
+   ```
+
+## Windows (MinGW)
+
+1. Install a MinGW compiler (e.g., MSYS2 or w64devkit).
+2. Install Raylib.
+   - **MSYS2**: Run `pacman -S mingw-w64-x86_64-raylib`.
+   - **Manual**: Download the MinGW release from [Raylib Releases](https://github.com/raysan5/raylib/releases), and ensure the `include` and `lib` directories are in your compiler's search path (or update the Makefile).
+
 # Patch notes for version 0.1
 
 - Migrated to raylib 5.
