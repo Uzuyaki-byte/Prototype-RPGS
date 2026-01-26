@@ -1,11 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://bdfm6n8y6luie"]
+[gd_scene load_steps=5 format=3 uid="uid://bdfm6n8y6luie"]
 
 [ext_resource type="PackedScene" uid="uid://b7byg2vguak65" path="res://scenes/world.tscn" id="1_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://cy7tio160l1wc" path="res://scenes/player.tscn" id="2_sugp2"]
+[ext_resource type="PackedScene" uid="uid://curcup8osxfxk" path="res://scenes/camera.tscn" id="3_sugp2"]
+[ext_resource type="PackedScene" uid="uid://cr3ajq3k580d8" path="res://scenes/player_management_system.tscn" id="4_jyhfs"]
 
 [node name="main" type="Node3D"]
 
 [node name="world" parent="." instance=ExtResource("1_0wfyh")]
 
+[node name="Player_Management_System" parent="." instance=ExtResource("4_jyhfs")]
+
+[node name="camera" parent="." instance=ExtResource("3_sugp2")]
+
 [node name="player" parent="." instance=ExtResource("2_sugp2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35.21496, 7.5001907, 36.38644)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0226717, 4.6848087, -7.7307987)

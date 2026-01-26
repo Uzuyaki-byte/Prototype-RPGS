@@ -15,6 +15,10 @@ run/main_scene="uid://bdfm6n8y6luie"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+PMS="*res://scripts/player_management_system.gd"
+
 [input]
 
 forward={
