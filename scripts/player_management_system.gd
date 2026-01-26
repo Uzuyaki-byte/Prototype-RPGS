@@ -1,8 +1,6 @@
 extends Node
 
 @export var input_dir: Vector2 = Vector2.ZERO
-@export var yaw_mag: float
-@export var pitch_mag: float
 @export var mouse_sens: float = 1
 @export var current_protag_chosen: int
 @export var current_protag_wanted: int
@@ -22,9 +20,6 @@ func _input(event: InputEvent) -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	if Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE and event is InputEventMouseButton:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		yaw_mag = -event.relative.x
-		pitch_mag = -event.relative.y
 
 
 
