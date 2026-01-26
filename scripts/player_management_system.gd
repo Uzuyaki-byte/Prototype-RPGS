@@ -29,5 +29,4 @@ func _input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
-	print(looking_basis, " - looking basis")
-	print(yaw_mag, " - yaw mag")
+	pass
