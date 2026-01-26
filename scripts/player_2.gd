@@ -1,7 +1,7 @@
 extends CharacterBody3D
 
 @onready var shape_cast_3d: ShapeCast3D = $ShapeCast3D
-var protag_index: int = 1
+var protag_index: int = 2
 var jump_imp: float = 10.0
 var walk_vel: float = 9.0
 var gravity: float = 20.0
@@ -9,7 +9,7 @@ var direction: Vector3 = Vector3.ZERO
 
 
 func _process(delta: float) -> void:
-	PMS.protag_1_pos = shape_cast_3d.global_position
+	PMS.protag_2_pos = shape_cast_3d.global_position
 
 
 func _physics_process(delta: float) -> void:

@@ -14,12 +14,12 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
-		yaw_mag = -event.relative.x
-		pitch_mag = -event.relative.y
+		yaw_mag += -event.relative.x
+		pitch_mag += -event.relative.y
 
 
 func _process(delta: float) -> void:
-	spring_arm.global_position = PMS.protag_1_pos
+	spring_arm.global_position = PMS.active_protag_pos
 	yaw.rotate_y(yaw_mag * delta * PMS.mouse_sens)
 	pitch.rotate_x(pitch_mag * delta * PMS.mouse_sens)
 	pitch.rotation.x = clamp(pitch.rotation.x, deg_to_rad(-90), deg_to_rad(120) )
