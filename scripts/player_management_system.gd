@@ -1,7 +1,7 @@
 extends Node
 
 @export var input_dir: Vector2 = Vector2.ZERO
-@export var mouse_sens: float = 0.6
+@export var mouse_sens: float = 0.3
 @export var active_protag_pos: Vector3
 @export var active_protag_index: int
 @export var protag_1_pos: Vector3
@@ -27,10 +27,9 @@ func _input(event: InputEvent) -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	match active_protag_index:
 		1:
 			active_protag_pos = protag_1_pos
 		2:
 			active_protag_pos = protag_2_pos
-	print(active_protag_index)

@@ -15,7 +15,7 @@ func _process(delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	if protag_index == PMS.active_protag_index:
 		if Input.is_action_just_pressed("jump") and is_on_floor():
-			velocity.y = lerp(velocity.y, jump_imp, 0.9)
+			velocity.y = jump_imp
 		
 		if not is_on_floor():
 			velocity.y -= gravity * delta
