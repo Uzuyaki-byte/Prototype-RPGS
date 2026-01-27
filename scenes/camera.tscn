@@ -10,7 +10,8 @@ script = ExtResource("1_cvpoc")
 [node name="pitch" type="Node3D" parent="yaw"]
 
 [node name="SpringArm3D" type="SpringArm3D" parent="yaw/pitch"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65617234, 1.9839755, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.2, 0)
 spring_length = 3.0
 
 [node name="Camera3D" type="Camera3D" parent="yaw/pitch/SpringArm3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)

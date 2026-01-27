@@ -1,7 +1,7 @@
 extends Node
 
 @export var input_dir: Vector2 = Vector2.ZERO
-@export var mouse_sens: float = 1
+@export var mouse_sens: float = 0.6
 @export var active_protag_pos: Vector3
 @export var active_protag_index: int
 @export var protag_1_pos: Vector3

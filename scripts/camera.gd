@@ -18,11 +18,11 @@ func _input(event: InputEvent) -> void:
 		pitch_mag += -event.relative.y
 
 
-func _process(delta: float) -> void:
-	spring_arm.global_position = PMS.active_protag_pos
+func _physics_process(delta: float) -> void:
+	self.global_position = PMS.active_protag_pos
 	yaw.rotate_y(yaw_mag * delta * PMS.mouse_sens)
 	pitch.rotate_x(pitch_mag * delta * PMS.mouse_sens)
 	pitch.rotation.x = clamp(pitch.rotation.x, deg_to_rad(-90), deg_to_rad(120) )
 	PMS.looking_basis = yaw.global_transform.basis
-	yaw_mag = 0
-	pitch_mag = 0
+	yaw_mag = lerp(yaw_mag,0.0, 0.2)
+	pitch_mag = lerp(pitch_mag, 0.0, 0.2)
