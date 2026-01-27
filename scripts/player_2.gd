@@ -21,6 +21,10 @@ func _physics_process(delta: float) -> void:
 			velocity.y -= gravity * delta
 		
 		direction = PMS.looking_basis * Vector3(PMS.input_dir.x, 0.0, PMS.input_dir.y)
+		
+		# Check for vehicle interaction
+		if Input.is_action_just_pressed("interact"):
+			try_enter_nearby_vehicle()
 	
 	if direction != Vector3.ZERO:
 		velocity.x = lerp(velocity.x, direction.x * walk_vel, 0.1)
@@ -30,3 +34,22 @@ func _physics_process(delta: float) -> void:
 		velocity.z = lerp(velocity.z, 0.0, 0.1)
 	
 	move_and_slide()
+
+
+func try_enter_nearby_vehicle() -> void:
+	# Find nearby vehicles
+	var space_state = get_world_3d().direct_space_state
+	var query = PhysicsShapeQueryParameters3D.new()
+	var sphere = SphereShape3D.new()
+	sphere.radius = 3.0
+	query.shape = sphere
+	query.transform = global_transform
+	query.collision_mask = 0xFFFFFFFF
+	
+	var results = space_state.intersect_shape(query)
+	for result in results:
+		var collider = result.collider
+		if collider.has_method("try_enter_nearest_player"):
+			collider.enter_vehicle(self)
+			break
+

@@ -7,6 +7,7 @@ extends Node
 @export var protag_1_pos: Vector3
 @export var protag_2_pos: Vector3
 @export var looking_basis: Basis = Basis.IDENTITY
+@export var current_vehicle: Node3D = null
 
 
 func _ready() -> void:
