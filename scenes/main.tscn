@@ -1,21 +1,55 @@
-[gd_scene load_steps=6 format=3 uid="uid://bdfm6n8y6luie"]
+[gd_scene format=3 uid="uid://bcj6uilubexq7"]
 
-[ext_resource type="PackedScene" uid="uid://b7byg2vguak65" path="res://scenes/world.tscn" id="1_0wfyh"]
-[ext_resource type="PackedScene" uid="uid://cy7tio160l1wc" path="res://scenes/player.tscn" id="2_sugp2"]
-[ext_resource type="PackedScene" uid="uid://curcup8osxfxk" path="res://scenes/camera.tscn" id="3_sugp2"]
-[ext_resource type="PackedScene" uid="uid://cr3ajq3k580d8" path="res://scenes/player_management_system.tscn" id="4_jyhfs"]
-[ext_resource type="PackedScene" uid="uid://dvgaoxjpn3ig1" path="res://scenes/player_2.tscn" id="5_tbgi4"]
+[ext_resource type="Script" uid="uid://bih10okcgkiup" path="res://scripts/player_2.gd" id="2_jyhfs"]
+[ext_resource type="Script" uid="uid://cwytik4o2x2e6" path="res://scripts/camera.gd" id="2_sugp2"]
+[ext_resource type="Script" uid="uid://csmsksone6uiy" path="res://scripts/player.gd" id="3_sugp2"]
 
-[node name="main" type="Node3D"]
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_tuxl4"]
 
-[node name="world" parent="." instance=ExtResource("1_0wfyh")]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jt2nf"]
+radius = 13.0
+height = 58.0
 
-[node name="Player_Management_System" parent="." instance=ExtResource("4_jyhfs")]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_tuxl4"]
 
-[node name="camera" parent="." instance=ExtResource("3_sugp2")]
+[node name="main" type="Node2D" unique_id=1649285456]
 
-[node name="player" parent="." instance=ExtResource("2_sugp2")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0226717, 4.6848087, -7.7307987)
+[node name="player" type="CharacterBody2D" parent="." unique_id=1634401985]
+position = Vector2(77, 72)
+script = ExtResource("3_sugp2")
 
-[node name="player2" parent="." instance=ExtResource("5_tbgi4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19, 4, 0)
+[node name="MeshInstance2D" type="MeshInstance2D" parent="player" unique_id=503704098]
+scale = Vector2(28.499998, 28.000002)
+mesh = SubResource("CapsuleMesh_tuxl4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="player" unique_id=1138829218]
+shape = SubResource("CapsuleShape2D_jt2nf")
+
+[node name="ShapeCast2D" type="ShapeCast2D" parent="player" unique_id=1427967108]
+position = Vector2(1, -15)
+shape = SubResource("CapsuleShape2D_tuxl4")
+target_position = Vector2(0, 27)
+
+[node name="player_2" type="CharacterBody2D" parent="." unique_id=240219458]
+position = Vector2(140, 72)
+script = ExtResource("2_jyhfs")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="player_2" unique_id=818966959]
+scale = Vector2(28.499998, 28.000002)
+mesh = SubResource("CapsuleMesh_tuxl4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="player_2" unique_id=1988399707]
+shape = SubResource("CapsuleShape2D_jt2nf")
+
+[node name="ShapeCast2D" type="ShapeCast2D" parent="player_2" unique_id=1305253037]
+position = Vector2(1, -15)
+shape = SubResource("CapsuleShape2D_tuxl4")
+target_position = Vector2(0, 27)
+
+[node name="camera" type="Node2D" parent="." unique_id=1888718120]
+position = Vector2(77, 72)
+script = ExtResource("2_sugp2")
+
+[node name="yaw" type="Node2D" parent="camera" unique_id=22111089]
+
+[node name="Camera2D" type="Camera2D" parent="camera/yaw" unique_id=1636592276]

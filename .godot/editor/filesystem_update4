@@ -1,3 +1,16 @@
-res://scripts/console.gd
+res://scenes/main.tscn
+res://scripts/camera.gd
+res://scenes/main_orig.tscn
+res://scenes/camera.gd
+res://scripts/player_2_orig.gd
+res://scenes/player_management_system.gd
+res://scripts/player_orig.gd
+res://scenes/player.gd
+res://scenes/player_2.gd
+res://scenes/console_orig.tscn
 res://scripts/car.gd
+res://scripts/console.gd
+res://scripts/player.gd
+res://scripts/player_2.gd
+res://scripts/player_management_system.gd
 res://scenes/car.tscn
