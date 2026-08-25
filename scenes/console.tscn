@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://console_scene_001"]
+[gd_scene format=3 uid="uid://dlbihj85n8r2v"]
 
 [ext_resource type="Script" path="res://scripts/console.gd" id="1_console"]
 

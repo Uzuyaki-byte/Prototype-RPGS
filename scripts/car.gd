@@ -1,15 +1,19 @@
-extends VehicleBody3D
+extends CharacterBody2D
 
-@export var engine_force_value: float = 4000.0
-@export var steering_limit: float = 0.4
-@export var brake_force: float = 50.0
+@export var max_speed: float = 600.0
+@export var acceleration: float = 400.0
+@export var steering_speed: float = 3.0
+@export var friction: float = 200.0
+@export var brake_force: float = 800.0
 
 var is_occupied: bool = false
-var driver: CharacterBody3D = null
+var driver: CharacterBody2D = null
 var enter_cooldown: float = 0.0  # Cooldown to prevent immediate exit
-@onready var driver_seat: Node3D = $DriverSeat
-@onready var exit_point: Node3D = $ExitPoint
-@onready var interaction_area: Area3D = $InteractionArea
+var current_speed: float = 0.0
+
+@onready var driver_seat: Node2D = $DriverSeat
+@onready var exit_point: Node2D = $ExitPoint
+@onready var interaction_area: Area2D = $InteractionArea
 
 
 func _ready() -> void:
@@ -23,26 +27,37 @@ func _physics_process(delta: float) -> void:
 		enter_cooldown -= delta
 	
 	if is_occupied:
-		# Steering
-		var steer_input = Input.get_axis("right", "left")
-		steering = lerp(steering, steer_input * steering_limit, 5.0 * delta)
+		# Steering (rotates vehicle while moving)
+		var steer_input = Input.get_axis("left", "right")
+		if current_speed != 0.0:
+			rotate(steer_input * steering_speed * delta * sign(current_speed))
 		
-		# Acceleration
+		# Acceleration and Reversing
 		var accel_input = Input.get_axis("backward", "forward")
-		engine_force = accel_input * engine_force_value
+		if accel_input != 0.0:
+			current_speed = move_toward(current_speed, accel_input * max_speed, acceleration * delta)
+		else:
+			current_speed = move_toward(current_speed, 0.0, friction * delta)
 		
 		# Braking
 		if Input.is_action_pressed("jump"):
-			brake = brake_force
-		else:
-			brake = 0.0
+			current_speed = move_toward(current_speed, 0.0, brake_force * delta)
+		
+		# Apply movement vector based on top-down rotation
+		velocity = Vector2.UP.rotated(rotation) * current_speed
+		move_and_slide()
 		
 		# Exit vehicle (only if cooldown expired)
 		if Input.is_action_just_pressed("interact") and enter_cooldown <= 0:
 			exit_vehicle()
+	else:
+		# Friction coast to stop when empty
+		current_speed = move_toward(current_speed, 0.0, friction * delta)
+		velocity = Vector2.UP.rotated(rotation) * current_speed
+		move_and_slide()
 
 
-func enter_vehicle(character: CharacterBody3D) -> void:
+func enter_vehicle(character: CharacterBody2D) -> void:
 	if is_occupied:
 		return
 	
@@ -67,24 +82,24 @@ func exit_vehicle() -> void:
 	driver.visible = true
 	driver.set_physics_process(true)
 	driver.set_process(true)
-	driver.velocity = Vector3.ZERO
+	driver.velocity = Vector2.ZERO
 	
 	# Notify camera to follow player again
 	PMS.set("current_vehicle", null)
 	driver = null
 
 
-var nearby_players: Array[CharacterBody3D] = []
+var nearby_players: Array[CharacterBody2D] = []
 
 
-func _on_body_entered(body: Node3D) -> void:
-	if body is CharacterBody3D and body.has_method("_physics_process"):
+func _on_body_entered(body: Node2D) -> void:
+	if body is CharacterBody2D and body.has_method("_physics_process"):
 		if not nearby_players.has(body):
 			nearby_players.append(body)
 
 
-func _on_body_exited(body: Node3D) -> void:
-	if body is CharacterBody3D:
+func _on_body_exited(body: Node2D) -> void:
+	if body is CharacterBody2D:
 		nearby_players.erase(body)
 
 

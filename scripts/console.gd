@@ -17,15 +17,19 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed:
-		if event.keycode == KEY_QUOTELEFT or event.physical_keycode == KEY_QUOTELEFT:  # ~ key
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.is_action_pressed("toggle_console") or event.keycode == KEY_QUOTELEFT or event.physical_keycode == KEY_QUOTELEFT:
 			toggle_console()
 			get_viewport().set_input_as_handled()
 		elif is_open:
-			if event.keycode == KEY_UP and command_history.size() > 0:
+			if event.keycode == KEY_ESCAPE:
+				toggle_console()
+				get_viewport().set_input_as_handled()
+			elif event.keycode == KEY_UP and command_history.size() > 0:
 				history_index = max(0, history_index - 1)
 				input_field.text = command_history[history_index]
 				input_field.caret_column = input_field.text.length()
+				get_viewport().set_input_as_handled()
 			elif event.keycode == KEY_DOWN and command_history.size() > 0:
 				history_index = min(command_history.size(), history_index + 1)
 				if history_index < command_history.size():
@@ -33,6 +37,7 @@ func _input(event: InputEvent) -> void:
 				else:
 					input_field.text = ""
 				input_field.caret_column = input_field.text.length()
+				get_viewport().set_input_as_handled()
 
 
 func toggle_console() -> void:
@@ -44,6 +49,7 @@ func toggle_console() -> void:
 		input_field.grab_focus()
 		input_field.clear()
 	else:
+		input_field.release_focus()
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 
@@ -82,8 +88,8 @@ func execute_command(command: String) -> String:
 func spawn_car() -> String:
 	var car_instance = CAR_SCENE.instantiate()
 	
-	# Spawn car near active player
-	var spawn_pos = PMS.active_protag_pos + Vector3(3, 1, 0)
+	# Spawn car near active 2D player position with a 96px X-offset (equivalent to 3 meters at 32px/unit)
+	var spawn_pos: Vector2 = PMS.active_protag_pos + Vector2(96, 0)
 	car_instance.global_position = spawn_pos
 	
 	# Add to main scene
@@ -99,7 +105,7 @@ func get_help() -> String:
   clear   - Clear console output
   
 Controls:
-  ~       - Toggle console
-  F       - Enter/exit vehicle
-  WASD    - Drive
-  Space   - Brake"""
+  ~        - Toggle console
+  F        - Enter/exit vehicle
+  WASD     - Drive
+  Space    - Brake"""
